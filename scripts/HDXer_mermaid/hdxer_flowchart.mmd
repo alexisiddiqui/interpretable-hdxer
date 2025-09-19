@@ -1,0 +1,73 @@
+
+flowchart TB
+    subgraph Input
+        traj["Input Trajectories\n(MDTraj format)"]
+        parm["Topology File"]
+        params["Parameters\n- Times\n- Segments\n- Method options"]
+        exp["Experimental Data"]
+    end
+
+    subgraph Trajectory_Processing
+        load["Load & Process Trajectory\n(full or chunks)"]
+        select["Atom Selection"]
+        traj --> load
+        parm --> load
+        load --> select
+    end
+
+    subgraph HDX_Prediction["HDX Prediction (choose method)"]
+        direction TB
+        subgraph BV_Method["Best-Vendruscolo Method"]
+            contacts["Calculate Contacts"]
+            hbonds["Calculate H-bonds"]
+            pf_bv["Calculate Protection Factors"]
+            contacts --> pf_bv
+            hbonds --> pf_bv
+        end
+        
+        subgraph PH_Method["Persson-Halle Method"]
+            wat_contacts["Calculate Water Contacts"]
+            pf_ph["Calculate Protection Factors"]
+            wat_contacts --> pf_ph
+        end
+    end
+
+    subgraph Analysis
+        rates["Calculate Intrinsic Rates"]
+        dfracs["Calculate Deuterated Fractions"]
+        segments["Average over Segments"]
+        error["Error Analysis"]
+        rates --> dfracs
+        pf_bv --> dfracs
+        pf_ph --> dfracs
+        dfracs --> segments
+        segments --> error
+    end
+
+    subgraph Reweighting
+        maxent["Maximum Entropy\nReweighting"]
+        exp --> maxent
+        segments --> maxent
+        maxent --> segments
+    end
+
+    subgraph Output
+        plots["Generate Plots\n- Deuteration curves\n- Protection factors\n- Error analysis"]
+        summary["Summary Files\n- Protection factors\n- Deuterated fractions\n- Segment averages"]
+        error --> plots
+        segments --> summary
+    end
+
+    select --> HDX_Prediction
+    params --> HDX_Prediction
+    params --> Analysis
+    params --> Reweighting
+
+    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef input fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef output fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    
+    class Input input
+    class Trajectory_Processing,HDX_Prediction,Analysis process
+    class Output output
+    class Reweighting process

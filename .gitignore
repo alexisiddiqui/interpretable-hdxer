@@ -1,0 +1,14 @@
+*.png
+*.csv
+*.pkl
+*.json
+*.npz
+*.npy
+*.dat
+*.pdf
+*.xtc
+*.log
+*.pdb
+*.lock
+*.offsets
+*.txt

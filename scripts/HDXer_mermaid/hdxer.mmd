@@ -1,0 +1,65 @@
+classDiagram
+    DfPredictor <|-- BV
+    DfPredictor <|-- PH
+    Analyze ..> DfPredictor : uses
+    Plots ..> Analyze : uses
+    MaxEnt ..> Analyze : uses
+
+    class DfPredictor {
+        +params: dict
+        +kint()
+        +dfrac()
+        +assign_cis_proline()
+        +assign_disulfide()
+        +assign_his_protonation()
+        +assign_termini()
+    }
+
+    class BV {
+        +contacts: array
+        +hbonds: array
+        +pfs: array
+        +PF()
+        +calc_hbonds()
+        +calc_nh_contacts()
+        +run(trajectory)
+    }
+
+    class PH {
+        +watcontacts: array
+        +pfs: array
+        +PF()
+        +calc_wat_contacts()
+        +run(trajectory)
+    }
+
+    class Analyze {
+        +residxs: array
+        +resfracs: array
+        +pfs: array
+        +segments()
+        +check_blocksize()
+        +propagate_errors()
+        +desc_stats()
+        +print_summaries()
+    }
+
+    class Plots {
+        +results: Analyze
+        +df_curve()
+        +df_convergence()
+        +seg_curve() 
+        +pf_byres()
+        +tot_pf()
+        +pf_error()
+        +switch_func()
+    }
+
+    class MaxEnt {
+        +methodparams: dict
+        +runparams: dict
+        +calc_lambdas()
+        +update_lambdas()
+        +make_iteration()
+        +run()
+    }
